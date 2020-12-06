@@ -28,6 +28,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
                         entity.getGender().toString(),
                         entity.getHireDate().toString()
                 ))
+                .limit(100)
                 .collect(Collectors.toList());
     }
 
