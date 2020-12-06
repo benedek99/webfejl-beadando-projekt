@@ -1,14 +1,12 @@
 package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.controller.dto.EmployeeDto;
+import hu.unideb.webdev.model.Employee;
 import hu.unideb.webdev.service.EmployeeService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -45,4 +43,16 @@ public class EmployeeController {
                 .collect(Collectors.toList());
     }
 
+    @PostMapping("/employee")
+    public void record(@RequestBody EmployeeDto requestDto){
+        try {
+            service.recordEmployee(new Employee(
+                    requestDto.getBirth_date(),
+                    requestDto.getFirst_name(),
+                    requestDto.getLast_name(),
+                    requestDto.getGender(),
+                    requestDto.getHire_date()
+                    ));
+        }
+    }
 }

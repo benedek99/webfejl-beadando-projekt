@@ -8,4 +8,5 @@ public interface EmployeeService {
 
     Collection<Employee> getAllEmployee();
 
+    void recordEmployee(Employee employee);
 }

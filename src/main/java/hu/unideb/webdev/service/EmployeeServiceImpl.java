@@ -19,4 +19,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Collection<Employee> getAllEmployee(){
         return employeeDao.readAll();
     }
+
+    @Override
+    public void recordEmployee(Employee employee){
+        employeeDao.createEmployee(employee);
+    }
 }
