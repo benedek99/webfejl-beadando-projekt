@@ -1,6 +1,8 @@
 package hu.unideb.webdev.service;
 
 import hu.unideb.webdev.dao.EmployeeDao;
+import hu.unideb.webdev.exceptions.UnknownEmployeeException;
+import hu.unideb.webdev.exceptions.UnknownGenderException;
 import hu.unideb.webdev.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void recordEmployee(Employee employee){
+    public void recordEmployee(Employee employee) throws UnknownGenderException {
         employeeDao.createEmployee(employee);
+    }
+
+    @Override
+    public void deleteEmployee(Employee employee) throws UnknownEmployeeException {
+        employeeDao.deleteEmployee(employee);
     }
 }

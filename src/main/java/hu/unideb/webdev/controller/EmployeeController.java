@@ -1,12 +1,16 @@
 package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.controller.dto.EmployeeDto;
+import hu.unideb.webdev.exceptions.UnknownEmployeeException;
+import hu.unideb.webdev.exceptions.UnknownGenderException;
 import hu.unideb.webdev.model.Employee;
 import hu.unideb.webdev.service.EmployeeService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -53,6 +57,25 @@ public class EmployeeController {
                     requestDto.getGender(),
                     requestDto.getHire_date()
                     ));
+        }
+        catch (UnknownGenderException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/employee")
+    public void delete(@RequestBody EmployeeDto requestDto){
+        try {
+            service.deleteEmployee(new Employee(
+                    requestDto.getBirth_date(),
+                    requestDto.getFirst_name(),
+                    requestDto.getLast_name(),
+                    requestDto.getGender(),
+                    requestDto.getHire_date()
+            ));
+        }
+        catch (UnknownEmployeeException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }
