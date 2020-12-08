@@ -5,15 +5,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.sql.Timestamp;
+
 @AllArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Employee {
 
-    private String birth_date;
-    private String first_name;
-    private String last_name;
+    private Timestamp birthDate;
+    private String firstName;
+    private String lastName;
     private String gender;
-    private  String hire_date;
+    private Timestamp hireDate;
 }

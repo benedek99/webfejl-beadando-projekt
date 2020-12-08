@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class EmployeeController {
 
     private final EmployeeService service;
-
+/*
     @GetMapping("/hello")
     public String hello(@RequestParam(name = "name", defaultValue = "World", required = false) String name){
         return String.format("Hello %s!", name);
@@ -32,17 +33,17 @@ public class EmployeeController {
     public String helloPath(@PathVariable("name") String name){
         return String.format("Hello %s!", name);
     }
-
+*/
     @GetMapping
     public Collection<EmployeeDto> listEmployees(){
         return service.getAllEmployee()
                 .stream()
                 .map(model -> EmployeeDto.builder()
-                    .birth_date(model.getBirth_date())
-                    .first_name(model.getFirst_name())
-                    .last_name(model.getLast_name())
+                    .birth_date(model.getBirthDate().toString())
+                    .first_name(model.getFirstName())
+                    .last_name(model.getLastName())
                     .gender(model.getGender())
-                    .hire_date(model.getHire_date())
+                    .hire_date(model.getHireDate().toString())
                     .build())
                 .collect(Collectors.toList());
     }
@@ -51,11 +52,11 @@ public class EmployeeController {
     public void record(@RequestBody EmployeeDto requestDto){
         try {
             service.recordEmployee(new Employee(
-                    requestDto.getBirth_date(),
+                    Timestamp.valueOf(requestDto.getBirth_date()),
                     requestDto.getFirst_name(),
                     requestDto.getLast_name(),
                     requestDto.getGender(),
-                    requestDto.getHire_date()
+                    Timestamp.valueOf(requestDto.getHire_date())
                     ));
         }
         catch (UnknownGenderException e){
@@ -67,12 +68,35 @@ public class EmployeeController {
     public void delete(@RequestBody EmployeeDto requestDto){
         try {
             service.deleteEmployee(new Employee(
-                    requestDto.getBirth_date(),
+                    Timestamp.valueOf(requestDto.getBirth_date()),
                     requestDto.getFirst_name(),
                     requestDto.getLast_name(),
                     requestDto.getGender(),
-                    requestDto.getHire_date()
+                    Timestamp.valueOf(requestDto.getHire_date())
             ));
+        }
+        catch (UnknownEmployeeException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public void update(@RequestBody EmployeeDto requestDtoOld, EmployeeDto requestDtoNew){
+        try {
+            service.updateEmployee(
+                    new Employee(
+                        Timestamp.valueOf(requestDtoOld.getBirth_date()),
+                        requestDtoOld.getFirst_name(),
+                        requestDtoOld.getLast_name(),
+                        requestDtoOld.getGender(),
+                        Timestamp.valueOf(requestDtoOld.getHire_date())),
+                    new Employee(
+                        Timestamp.valueOf(requestDtoNew.getBirth_date()),
+                        requestDtoNew.getFirst_name(),
+                        requestDtoNew.getLast_name(),
+                        requestDtoNew.getGender(),
+                        Timestamp.valueOf(requestDtoNew.getHire_date()))
+            );
         }
         catch (UnknownEmployeeException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

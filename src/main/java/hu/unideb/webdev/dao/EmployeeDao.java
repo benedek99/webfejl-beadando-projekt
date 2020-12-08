@@ -13,4 +13,6 @@ public interface EmployeeDao {
     Collection<Employee> readAll();
 
     void deleteEmployee(Employee employee) throws UnknownEmployeeException;
+
+    void updateEmployee(Employee employeeOld, Employee employeeNew) throws UnknownEmployeeException;
 }

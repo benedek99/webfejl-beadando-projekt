@@ -31,4 +31,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Employee employee) throws UnknownEmployeeException {
         employeeDao.deleteEmployee(employee);
     }
+
+    @Override
+    public void updateEmployee(Employee employeeOld, Employee employeeNew) throws UnknownEmployeeException {
+        employeeDao.updateEmployee(employeeOld,employeeNew);
+    }
 }

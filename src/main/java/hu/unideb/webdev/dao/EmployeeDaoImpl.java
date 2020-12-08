@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
@@ -28,11 +29,11 @@ public class EmployeeDaoImpl implements EmployeeDao{
     public Collection<Employee> readAll(){
         return StreamSupport.stream(employeeRepository.findAll().spliterator(),false)
                 .map(entity -> new Employee(
-                        entity.getBirthDate().toString(),
+                        entity.getBirthDate(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getGender().toString(),
-                        entity.getHireDate().toString()
+                        entity.getHireDate()
                 ))
                 .limit(100)
                 .collect(Collectors.toList());
@@ -44,11 +45,11 @@ public class EmployeeDaoImpl implements EmployeeDao{
         EmployeeEntity employeeEntity;
 
         employeeEntity = EmployeeEntity.builder()
-                .birthDate(Timestamp.valueOf(employee.getBirth_date()))
-                .firstName(employee.getFirst_name())
-                .lastName(employee.getLast_name())
+                .birthDate(employee.getBirthDate())
+                .firstName(employee.getFirstName())
+                .lastName(employee.getLastName())
                 .gender(Gender.valueOf(employee.getGender()))
-                .hireDate(Timestamp.valueOf(employee.getHire_date()))
+                .hireDate(employee.getHireDate())
                 .build();
 
         log.info("EmployeeEntity: {}", employeeEntity);
@@ -66,17 +67,51 @@ public class EmployeeDaoImpl implements EmployeeDao{
     public void deleteEmployee(Employee employee) throws UnknownEmployeeException {
         Optional<EmployeeEntity> employeeEntity = StreamSupport.stream(employeeRepository.findAll().spliterator(),false).filter(
                 entity -> {
-                    return employee.getBirth_date().equals(entity.getBirthDate()) &&
-                            employee.getFirst_name().equals(entity.getFirstName()) &&
-                            employee.getLast_name().equals(entity.getLastName()) &&
-                            employee.getGender().equals(entity.getGender()) &&
-                            employee.getHire_date().equals(entity.getHireDate());
+                    return employee.getBirthDate().equals(entity.getBirthDate()) &&
+                            employee.getFirstName().equals(entity.getFirstName()) &&
+                            employee.getLastName().equals(entity.getLastName()) &&
+                            employee.getGender().equals(entity.getGender().toString()) &&
+                            employee.getHireDate().equals(entity.getHireDate());
+
+                }
+        ).findFirst();
+        if(!employeeEntity.isPresent()){
+            throw new UnknownEmployeeException(String.format("Employee Not Found %s",employee), employee);
+        }
+        log.info("EmployeeEntity: {}", employeeEntity.get());
+        employeeRepository.delete(employeeEntity.get());
+    }
+
+    @Override
+    public void updateEmployee(Employee employeeOld, Employee employeeNew) throws UnknownEmployeeException {
+        Optional<EmployeeEntity> employeeEntity = StreamSupport.stream(employeeRepository.findAll().spliterator(),false).filter(
+                entity -> {
+                    return employeeOld.getBirthDate().equals(entity.getBirthDate()) &&
+                            employeeOld.getFirstName().equals(entity.getFirstName()) &&
+                            employeeOld.getLastName().equals(entity.getLastName()) &&
+                            employeeOld.getGender().equals(entity.getGender().toString()) &&
+                            employeeOld.getHireDate().equals(entity.getHireDate());
 
                 }
         ).findAny();
         if(!employeeEntity.isPresent()){
-            throw new UnknownEmployeeException(String.format("Employee Not Found %s",employee), employee);
+            throw new UnknownEmployeeException(String.format("Employee Not Found %s",employeeOld), employeeOld);
         }
-        employeeRepository.delete(employeeEntity.get());
+
+        employeeEntity.get().setBirthDate(employeeNew.getBirthDate());
+        employeeEntity.get().setFirstName(employeeNew.getFirstName());
+        employeeEntity.get().setLastName(employeeNew.getLastName());
+        employeeEntity.get().setGender(Gender.valueOf(employeeNew.getGender()));
+        employeeEntity.get().setHireDate(employeeNew.getHireDate());
+
+        log.info("EmployeeEntity: {}", employeeEntity);
+        try{
+            employeeRepository.save(employeeEntity.get());
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+        }
+
+
     }
 }

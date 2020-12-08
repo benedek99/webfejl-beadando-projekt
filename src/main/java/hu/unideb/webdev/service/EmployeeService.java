@@ -13,4 +13,6 @@ public interface EmployeeService {
     void recordEmployee(Employee employee) throws UnknownGenderException;
 
     void deleteEmployee(Employee employee) throws UnknownEmployeeException;
+
+    void updateEmployee(Employee employeeOld, Employee employeeNew) throws UnknownEmployeeException;
 }
