@@ -17,9 +17,8 @@ import java.sql.Timestamp;
 public class DepartmentEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dept_no")
-    private int departmentNumber;
+    private String departmentNumber;
 
     @Column(name = "dept_name")
     private String departmentName;

@@ -2,15 +2,12 @@ package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.dao.entity.EmployeeEntity;
 import hu.unideb.webdev.exceptions.UnknownEmployeeException;
-import hu.unideb.webdev.exceptions.UnknownGenderException;
 import hu.unideb.webdev.model.Employee;
 import hu.unideb.webdev.model.Gender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +37,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
     }
 
     @Override
-    public void createEmployee(Employee employee) throws UnknownGenderException{
+    public void createEmployee(Employee employee) {
 
         EmployeeEntity employeeEntity;
 
@@ -76,7 +73,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
                 }
         ).findFirst();
         if(!employeeEntity.isPresent()){
-            throw new UnknownEmployeeException(String.format("Employee Not Found %s",employee), employee);
+            throw new UnknownEmployeeException(String.format("Employee Not Found: %s",employee), employee);
         }
         log.info("EmployeeEntity: {}", employeeEntity.get());
         employeeRepository.delete(employeeEntity.get());
@@ -95,7 +92,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
                 }
         ).findAny();
         if(!employeeEntity.isPresent()){
-            throw new UnknownEmployeeException(String.format("Employee Not Found %s",employeeOld), employeeOld);
+            throw new UnknownEmployeeException(String.format("Employee Not Found: %s",employeeOld), employeeOld);
         }
 
         employeeEntity.get().setBirthDate(employeeNew.getBirthDate());

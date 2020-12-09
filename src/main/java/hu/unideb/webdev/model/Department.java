@@ -11,6 +11,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Department {
 
-    private String dept_no;
-    private String dept_name;
+    private String deptNo;
+    private String deptName;
 }

@@ -1,11 +1,8 @@
 package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.controller.dto.EmployeeDto;
-import hu.unideb.webdev.exceptions.UnknownEmployeeException;
-import hu.unideb.webdev.exceptions.UnknownGenderException;
 import hu.unideb.webdev.model.Employee;
 import hu.unideb.webdev.service.EmployeeService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,7 +31,7 @@ public class EmployeeController {
         return String.format("Hello %s!", name);
     }
 */
-    @GetMapping
+    @GetMapping("/employee/list")
     public Collection<EmployeeDto> listEmployees(){
         return service.getAllEmployee()
                 .stream()
@@ -48,8 +45,8 @@ public class EmployeeController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/employee")
-    public void record(@RequestBody EmployeeDto requestDto){
+    @PostMapping("/employee/record")
+    public void recordEmployee(@RequestBody EmployeeDto requestDto){
         try {
             service.recordEmployee(new Employee(
                     Timestamp.valueOf(requestDto.getBirth_date()),
@@ -59,13 +56,13 @@ public class EmployeeController {
                     Timestamp.valueOf(requestDto.getHire_date())
                     ));
         }
-        catch (UnknownGenderException e){
+        catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @DeleteMapping("/employee")
-    public void delete(@RequestBody EmployeeDto requestDto){
+    @DeleteMapping("/employee/delete")
+    public void deleteEmployee(@RequestBody EmployeeDto requestDto){
         try {
             service.deleteEmployee(new Employee(
                     Timestamp.valueOf(requestDto.getBirth_date()),
@@ -75,13 +72,13 @@ public class EmployeeController {
                     Timestamp.valueOf(requestDto.getHire_date())
             ));
         }
-        catch (UnknownEmployeeException e){
+        catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PostMapping
-    public void update(@RequestBody EmployeeDto requestDtoOld, EmployeeDto requestDtoNew){
+    @PostMapping("/employee/update")
+    public void updateEmployee(@RequestBody EmployeeDto requestDtoOld, EmployeeDto requestDtoNew){
         try {
             service.updateEmployee(
                     new Employee(
@@ -98,7 +95,7 @@ public class EmployeeController {
                         Timestamp.valueOf(requestDtoNew.getHire_date()))
             );
         }
-        catch (UnknownEmployeeException e){
+        catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
