@@ -3,6 +3,7 @@ package hu.unideb.webdev.dao;
 import hu.unideb.webdev.dao.entity.EmployeeEntity;
 import hu.unideb.webdev.dao.entity.SalaryEntity;
 import hu.unideb.webdev.dao.entity.SalaryEntityId;
+import hu.unideb.webdev.exceptions.SalaryNotFoundException;
 import hu.unideb.webdev.exceptions.UnknownEmployeeException;
 import hu.unideb.webdev.model.Employee;
 import hu.unideb.webdev.model.Salary;
@@ -26,7 +27,7 @@ public class SalaryDaoImpl implements SalaryDao{
     @Override
     public Collection<Salary> readAll() {
         return StreamSupport.stream(salaryRepository.findAll().spliterator(),false)
-                .limit(10)
+                .limit(100)
                 .map(entity -> new Salary(
                         entity.getSalaryEntityId().getEmployee().getId(),
                         entity.getSalary(),
@@ -50,17 +51,61 @@ public class SalaryDaoImpl implements SalaryDao{
             throw new UnknownEmployeeException("Employee Not Found");
         }
 
+        SalaryEntityId salaryEntityId = new SalaryEntityId();
+        salaryEntityId.setEmployee(employeeEntity.get());
+        salaryEntityId.setFromDate(salary.getFromDate());
+
         salaryEntity = SalaryEntity.builder()
-                .salaryEntityId(SalaryEntityId.builder()
-                        .employee(employeeEntity.get())
-                        .fromDate(salary.getFromDate())
-                        .build())
+                .salaryEntityId(salaryEntityId)
                 .salary(salary.getSalary())
                 .toDate(salary.getToDate())
                 .build();
 
         try{
             salaryRepository.save(salaryEntity);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteSalary(Salary salary) throws SalaryNotFoundException {
+
+        Optional<SalaryEntity> salaryEntity= StreamSupport.stream(salaryRepository.findAll().spliterator(),false).filter(
+                entity ->{
+                    return salary.getEmpNo() == entity.getSalaryEntityId().getEmployee().getId() && salary.getFromDate().equals(entity.getSalaryEntityId().getFromDate());
+                }
+        ).findFirst();
+
+        if(!salaryEntity.isPresent()){
+            throw new SalaryNotFoundException("Salary not found");
+        }
+        try{
+            salaryRepository.delete(salaryEntity.get());
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateSalary(Salary salary) throws SalaryNotFoundException {
+        Optional<SalaryEntity> salaryEntity= StreamSupport.stream(salaryRepository.findAll().spliterator(),false).filter(
+                entity ->{
+                    return salary.getEmpNo() == entity.getSalaryEntityId().getEmployee().getId() && salary.getFromDate().equals(entity.getSalaryEntityId().getFromDate());
+                }
+        ).findFirst();
+
+        if(!salaryEntity.isPresent()){
+            throw new SalaryNotFoundException("Salary not found");
+        }
+
+        salaryEntity.get().setSalary(salary.getSalary());
+        salaryEntity.get().setToDate(salary.getToDate());
+
+        try{
+            salaryRepository.save(salaryEntity.get());
         }
         catch(Exception e){
             log.error(e.getMessage());

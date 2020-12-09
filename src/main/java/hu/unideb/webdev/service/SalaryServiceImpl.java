@@ -3,6 +3,7 @@ package hu.unideb.webdev.service;
 import hu.unideb.webdev.dao.SalaryDao;
 import hu.unideb.webdev.exceptions.InvalidDatesException;
 import hu.unideb.webdev.exceptions.InvalidSalaryException;
+import hu.unideb.webdev.exceptions.SalaryNotFoundException;
 import hu.unideb.webdev.exceptions.UnknownEmployeeException;
 import hu.unideb.webdev.model.Salary;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,15 @@ public class SalaryServiceImpl implements SalaryService{
             throw new InvalidDatesException("Invalid Dates");
         }
         salaryDao.createSalary(salary);
+    }
+
+    @Override
+    public void deleteSalary(Salary salary) throws UnknownEmployeeException, SalaryNotFoundException {
+        salaryDao.deleteSalary(salary);
+    }
+
+    @Override
+    public void updateSalary(Salary salary) throws SalaryNotFoundException {
+        salaryDao.updateSalary(salary);
     }
 }
