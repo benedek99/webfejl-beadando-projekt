@@ -42,7 +42,13 @@ public class SalaryServiceImpl implements SalaryService{
     }
 
     @Override
-    public void updateSalary(Salary salary) throws SalaryNotFoundException {
+    public void updateSalary(Salary salary) throws SalaryNotFoundException, InvalidSalaryException, InvalidDatesException {
+        if (salary.getSalary()<0){
+            throw new InvalidSalaryException("Salary Must Be Positive");
+        }
+        if (salary.getFromDate().after(salary.getToDate())){
+            throw new InvalidDatesException("Invalid Dates");
+        }
         salaryDao.updateSalary(salary);
     }
 }

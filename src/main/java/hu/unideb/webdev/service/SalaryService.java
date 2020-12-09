@@ -16,5 +16,5 @@ public interface SalaryService {
 
     public void deleteSalary(Salary salary) throws UnknownEmployeeException, SalaryNotFoundException;
 
-    public void updateSalary(Salary salary) throws SalaryNotFoundException;
+    public void updateSalary(Salary salary) throws SalaryNotFoundException, InvalidSalaryException, InvalidDatesException;
 }

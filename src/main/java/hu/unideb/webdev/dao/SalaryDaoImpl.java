@@ -111,6 +111,4 @@ public class SalaryDaoImpl implements SalaryDao{
             log.error(e.getMessage());
         }
     }
-
-    /*      */
 }
