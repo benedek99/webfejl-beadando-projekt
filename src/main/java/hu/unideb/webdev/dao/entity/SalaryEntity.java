@@ -1,13 +1,13 @@
 package hu.unideb.webdev.dao.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

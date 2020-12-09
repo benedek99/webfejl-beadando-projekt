@@ -5,13 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+
+
 @AllArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Salary {
-    private String empNo;
-    private String salary;
-    private String fromDate;
-    private String toDate;
+
+    private int empNo;
+    private int salary;
+    private Timestamp fromDate;
+    private Timestamp toDate;
 }

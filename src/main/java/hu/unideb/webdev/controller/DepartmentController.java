@@ -1,7 +1,6 @@
 package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.controller.dto.DepartmentDto;
-import hu.unideb.webdev.controller.dto.EmployeeDto;
 import hu.unideb.webdev.model.Department;
 import hu.unideb.webdev.service.DepartmentService;
 import lombok.RequiredArgsConstructor;

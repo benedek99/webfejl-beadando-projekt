@@ -19,8 +19,6 @@ import java.util.stream.StreamSupport;
 public class EmployeeDaoImpl implements EmployeeDao{
 
     private final EmployeeRepository employeeRepository;
-    private final SalaryRepository salaryRepository;
-    private final TitleRepository titleRepository;
 
     @Override
     public Collection<Employee> readAll(){
